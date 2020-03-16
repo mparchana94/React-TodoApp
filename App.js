@@ -3,7 +3,8 @@ import {
   StyleSheet,
   View,
   Text,
-  FlatList
+  FlatList, 
+  Alert
 } from 'react-native';
 import Header from './components/header';
 import TodoItem from './components/todoitem';
@@ -27,12 +28,18 @@ export default function App() {
   }
 
   const submitHandler = (text) => {
-    setTodos((prevTodos) => {
-      return [
-        { text: text, key: Math.random().toString()},
-        ...prevTodos
-      ];
-    })
+    if(text.length > 3) {
+      setTodos((prevTodos) => {
+        return [
+          { text: text, key: Math.random().toString()},
+          ...prevTodos
+        ];
+      });
+    } else {
+      Alert.alert('OOPS!', 'Todos must be over 3 long', [{text: 'Understood', onPress: () => console.log('alert closed')}
+      ]);
+    }
+
   }
 
   return(

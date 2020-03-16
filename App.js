@@ -1,89 +1,69 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React from 'react';
+import React, { useState} from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
+  FlatList
 } from 'react-native';
+import Header from './components/header';
+import TodoItem from './components/todoitem';
+import AddTodo from './components/addTodo';
 
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Home Walkthrough</Text>
-              <Text style={styles.sectionDescription}>
-              <Text style={styles.highlight}>ADD AN AREA AND NOTES</Text>
-              </Text>
-            </View>   
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+export default function App() {
+  const [todos, setTodos] = useState([
+    { text: 'home Walkthrough', key: '1'},
+    { text: 'create an app', key: '2'},
+    { text: 'play on the switch', key: '3'}
+  ]);
+
+  const pressHandler = (key) => {
+    setTodos((prevTodos) => {
+      return prevTodos.filter(todo => todo.key != key);
+    });
+  }
+
+  const submitHandler = (text) => {
+    setTodos((prevTodos) => {
+      return [
+        { text: text, key: Math.random().toString()},
+        ...prevTodos
+      ];
+    })
+  }
+
+  return(
+    <View style={styles.container}>
+      <Header />
+      <View style={styles.content}>
+         <AddTodo submitHandler={submitHandler}/>
+        <View style={styles.list}>
+          <FlatList
+            data={todos}
+            renderItem={({ item }) => (
+              <TodoItem item={item} pressHandler={pressHandler} />
+            )}
+          />
+        </View>
+      </View>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
-  engine: {
-    position: 'absolute',
-    right: 0,
+
+  content: {
+    padding: 40,
   },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
+
+  list: {
+    marginTop: 20,
   },
 });
-
-export default App;

@@ -1,14 +1,11 @@
 import React, { useState} from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList, 
-  Alert
+  StyleSheet, View, Text, FlatList, Alert, TouchableWithoutFeedback, Keyboard
 } from 'react-native';
 import Header from './components/header';
 import TodoItem from './components/todoitem';
 import AddTodo from './components/addTodo';
+import Sanbox from './components/sanbox';
 
 import {
   Colors,
@@ -43,20 +40,26 @@ export default function App() {
   }
 
   return(
-    <View style={styles.container}>
-      <Header />
-      <View style={styles.content}>
-         <AddTodo submitHandler={submitHandler}/>
-        <View style={styles.list}>
-          <FlatList
-            data={todos}
-            renderItem={({ item }) => (
-              <TodoItem item={item} pressHandler={pressHandler} />
-            )}
-          />
+    // <Sanbox />
+    <TouchableWithoutFeedback onPress={() => {
+      Keyboard.dismiss();
+      console.log('dismissed keyboard')
+    }}>
+      <View style={styles.container}>
+        <Header />
+        <View style={styles.content}>
+           <AddTodo submitHandler={submitHandler}/>
+          <View style={styles.list}>
+            <FlatList
+              data={todos}
+              renderItem={({ item }) => (
+                <TodoItem item={item} pressHandler={pressHandler} />
+              )}
+            />
+          </View>
         </View>
       </View>
-    </View>
+      </TouchableWithoutFeedback>
   );
 }
 
@@ -67,10 +70,12 @@ const styles = StyleSheet.create({
   },
 
   content: {
+    flex: 1,
     padding: 40,
   },
 
   list: {
+    flex: 1,
     marginTop: 20,
   },
 });

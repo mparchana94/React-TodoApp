@@ -15,26 +15,36 @@ export default function AddTodo({submitHandler}) {
   };
 
   const onStartRecord = async () => {
-    const result = await audioRecorderPlayer.startRecorder();
-    audioRecorderPlayer.addRecordBackListener(e => {
-      setRecordsecs({
-        recordSecs: e.current_position,
+    try {
+      const result = await audioRecorderPlayer.startRecorder();
+      audioRecorderPlayer.addRecordBackListener(e => {
+        setRecordsecs({
+          recordSecs: e.current_position,
+        });
+        setRecordTime({
+          recordTime: audioRecorderPlayer.mmssss(
+            Math.floor(e.current_position),
+          ),
+        });
+        return;
       });
-      setRecordTime({
-        recordTime: audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
-      });
-      return;
-    });
-    console.log(result);
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onStopRecord = async () => {
-    const result = await audioRecorderPlayer.stopRecorder();
-    audioRecorderPlayer.removeRecordBackListener();
-    setRecordsecs({
-      recordSecs: 0,
-    });
-    console.log(result);
+    try {
+      const result = await audioRecorderPlayer.stopRecorder();
+      audioRecorderPlayer.removeRecordBackListener();
+      setRecordsecs({
+        recordSecs: 0,
+      });
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -47,12 +57,12 @@ export default function AddTodo({submitHandler}) {
       <Button
         style={styles.button}
         onPress={() => onStartRecord()}
-        title="start"
+        title="start Record"
       />
       <Button
-        style={styles.button}
+        style={styles.record}
         onPress={() => onStopRecord()}
-        title="Stop"
+        title="Stop Record"
       />
       <Button
         onPress={() => submitHandler(text, audioPath, recordSecs, recordTime)}
@@ -71,7 +81,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  button: {
+  record: {
     flex: 2,
     flexDirection: 'row',
     justifyContent: 'space-around',

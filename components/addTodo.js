@@ -13,13 +13,11 @@ export default function AddTodo({submitHandler}) {
   };
 
   onStartRecord = async () => {
-    const result = await this.audioRecorderPlayer.startRecorder();
-    this.audioRecorderPlayer.addRecordBackListener((e) => {
-      this.setState({
+    const result = await audioRecorderPlayer.startRecorder();
+    audioRecorderPlayer.addRecordBackListener((e) => {
+      this.useState({
         recordSecs: e.current_position,
-        recordTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.current_position),
-        ),
+        recordTime: audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
       });
       return;
     });
@@ -33,12 +31,14 @@ export default function AddTodo({submitHandler}) {
         placeholder="new todo....."
         onChangeText={changeHadler}
       />
-      <Button 
-        onPress={() => onStartRecord(text, audioPath)} 
-        title="start" 
-      />
       <Button
-        onPress={() => submitHandler(text)}
+        style={styles.button}
+        onPress={() => onStartRecord()}
+        title="start"
+      />
+      <Button title="Stop" />
+      <Button
+        onPress={() => submitHandler(text, audioPath)}
         title="add todo"
         color="coral"
       />
@@ -55,9 +55,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   button: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingTop: 20,
     marginBottom: 10,
     paddingHorizontal: 8,
     paddingVertical: 6,
-    borderBottomWidth: 1,
   },
 });

@@ -18,18 +18,17 @@ export default function AddTodo({submitHandler}) {
     try {
       const result = await audioRecorderPlayer.startRecorder();
       audioRecorderPlayer.addRecordBackListener(e => {
-        setRecordsecs({
-          recordSecs: e.current_position,
-        });
-        setRecordTime({
-          recordTime: audioRecorderPlayer.mmssss(
-            Math.floor(e.current_position),
-          ),
-        });
+        console.log(e.current_position);
+        setRecordsecs(e.current_position);
+        setRecordTime(
+          audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
+        );
         return;
       });
+      setAudio(result);
       console.log(result);
     } catch (error) {
+      console.log('Error block');
       console.log(error);
     }
   };
@@ -38,9 +37,7 @@ export default function AddTodo({submitHandler}) {
     try {
       const result = await audioRecorderPlayer.stopRecorder();
       audioRecorderPlayer.removeRecordBackListener();
-      setRecordsecs({
-        recordSecs: 0,
-      });
+      setRecordsecs(0);
       console.log(result);
     } catch (error) {
       console.log(error);
@@ -54,16 +51,20 @@ export default function AddTodo({submitHandler}) {
         placeholder="new todo....."
         onChangeText={changeHadler}
       />
-      <Button
-        style={styles.button}
-        onPress={() => onStartRecord()}
-        title="start Record"
-      />
-      <Button
-        style={styles.record}
-        onPress={() => onStopRecord()}
-        title="Stop Record"
-      />
+      {recordSecs === 0 ? (
+        <Button
+          style={styles.buttonRecord}
+          onPress={() => onStartRecord()}
+          title="start Record"
+        />
+      ) : (
+        <Button
+          style={styles.buttonRecord}
+          onPress={() => onStopRecord()}
+          title="Stop Record"
+        />
+      )}
+
       <Button
         onPress={() => submitHandler(text, audioPath, recordSecs, recordTime)}
         title="add todo"
@@ -81,13 +82,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  record: {
-    flex: 2,
+  buttonRecord: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingTop: 20,
-    marginBottom: 10,
-    paddingHorizontal: 8,
-    paddingVertical: 6,
   },
 });

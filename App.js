@@ -28,10 +28,19 @@ export default function App() {
     });
   };
 
-  const submitHandler = (text, audio) => {
+  const submitHandler = (text, audio, recordSecs, recordTime) => {
     if (text.length > 3) {
       setTodos(prevTodos => {
-        return [{text: text, key: Math.random().toString()}, ...prevTodos];
+        return [
+          {
+            text: text,
+            audio: audio,
+            recordSecs: recordSecs,
+            recordTime: recordTime,
+            key: Math.random().toString(),
+          },
+          ...prevTodos,
+        ];
       });
     } else {
       Alert.alert('OOPS!', 'Todos must be over 3 long', [

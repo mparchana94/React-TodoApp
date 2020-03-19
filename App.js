@@ -28,7 +28,15 @@ export default function App() {
     });
   };
 
-  const submitHandler = (text, audio, recordSecs, recordTime) => {
+  const submitHandler = (
+    text,
+    audio,
+    recordSecs,
+    recordTime,
+    audioFile,
+    recording,
+    loaded,
+  ) => {
     if (text.length > 3) {
       setTodos(prevTodos => {
         return [
@@ -37,6 +45,9 @@ export default function App() {
             audio: audio,
             recordSecs: recordSecs,
             recordTime: recordTime,
+            audioFile: audioFile,
+            recording: recording,
+            loaded: loaded,
             key: Math.random().toString(),
           },
           ...prevTodos,

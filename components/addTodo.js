@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TextInput, Button} from 'react-native';
-// import Permissions from 'react-native-permissions';
 import {Buffer} from 'buffer';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import AudioRecord from 'react-native-audio-record';
@@ -11,8 +10,8 @@ export default function AddTodo({submitHandler}) {
   const [recordSecs, setRecordsecs] = useState(0);
   const [recordTime, setRecordTime] = useState(0);
   const [audioFile, setAudio] = useState('');
-  const [recording, setRecording] = useState('false');
-  const [loaded, setLoaded] = useState('false');
+  const [recording, setRecording] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const changeHadler = val => {
     setText(val);
@@ -24,41 +23,41 @@ export default function AddTodo({submitHandler}) {
   });
 
   const checkPermission = async () => {
-    const p = await PERMISSIONS.ANDROID.RECORD_AUDIO;
+    const p = await check(PERMISSIONS.ANDROID.RECORD_AUDIO);
     console.log('permission check', p);
     if (p === 'authorized') {
       return;
     }
-    return requestPermission();
+    // return requestPermission();
   };
 
-  const requestPermission = async () => {
-    const p = await PERMISSIONS.ANDROID.RECORD_AUDIO;
-    console.log('permission request', p);
-  };
+  // const requestPermission = async () => {
+  //   const p = await Permissions.request('microphone');
+  //   console.log('permission request', p);
+  // };
 
   const initAudioRecord = () => {
     const options = {
       sampleRate: 16000,
       channels: 1,
       bitsPerSample: 16,
-      wavFile: 'test.wav',
+      wavFile: 'test1.wav',
     };
 
     AudioRecord.init(options);
 
-    AudioRecord.on('data', data => {
+    return AudioRecord.on('data', data => {
       const chunk = Buffer.from(data, 'base64');
       console.log('chunk size', chunk.byteLength);
       // do something with audio chunk
     });
   };
 
-  const start = async () => {
+  const start = () => {
     console.log('start record');
-    setAudio({audioFile: ''});
-    setRecording({recording: true});
-    setLoaded({loaded: false});
+    setAudio('');
+    setRecording(true);
+    setLoaded(false);
     AudioRecord.start();
   };
 
@@ -67,10 +66,10 @@ export default function AddTodo({submitHandler}) {
       return;
     }
     console.log('stop record');
-    let voiceFile = await AudioRecord.stop();
+    const voiceFile = await AudioRecord.stop();
     console.log('audioFile', voiceFile);
-    setAudio({audioFile: ''});
-    setRecording({recording: true});
+    setAudio(voiceFile);
+    setRecording(false);
   };
 
   return (
@@ -80,20 +79,6 @@ export default function AddTodo({submitHandler}) {
         placeholder="new todo....."
         onChangeText={changeHadler}
       />
-      {recordSecs === 0 ? (
-        <Button
-          style={styles.buttonRecord}
-          onPress={() => start()}
-          title="start Record"
-        />
-      ) : (
-        <Button
-          style={styles.buttonRecord}
-          onPress={() => stop()}
-          title="Stop Record"
-        />
-      )}
-
       <Button
         onPress={() =>
           submitHandler(
@@ -108,6 +93,19 @@ export default function AddTodo({submitHandler}) {
         title="add todo"
         color="coral"
       />
+      {!recording ? (
+        <Button
+          style={styles.buttonRecord}
+          onPress={() => start()}
+          title="start Record"
+        />
+      ) : (
+        <Button
+          style={styles.buttonRecord}
+          onPress={() => stop()}
+          title="Stop Record"
+        />
+      )}
     </View>
   );
 }

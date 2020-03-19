@@ -19,7 +19,7 @@ export default function App() {
   const [todos, setTodos] = useState([
     {text: 'home Walkthrough', key: '1'},
     {text: 'create an app', key: '2'},
-    {text: 'play on the switch', key: '3'},
+    {text: 'Bed Room', key: '3'},
   ]);
 
   const pressHandler = key => {
